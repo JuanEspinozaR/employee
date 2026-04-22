@@ -65,8 +65,26 @@ https://jsonplaceholder.typicode.com/users
 * Synchronizing employee data into PostgreSQL
 * Running scheduled CronJobs/listeners
 * Transforming existing MySQL scripts into PostgreSQL-compatible scripts
-* No authentication required (internal synchronization process only)
+```text
 
+  CREATE TABLE employee (
+    id INT PRIMARY KEY,
+    first_name VARCHAR(100),
+    last_name VARCHAR(100),
+    email VARCHAR(150),
+    username VARCHAR(100),
+    age INT,
+    gender VARCHAR(20)
+  );
+```
+* No authentication required (internal synchronization process only)
+## Synchronization Validation Rules
+The synchronization process must validate employee records before persisting data:
+- If an employee email does not exist in PostgreSQL → create a new employee record
+- If an employee email already exists → update the existing employee information
+- If an employee record exists in PostgreSQL but no longer exists in the external REST service → delete the employee record from the database
+
+This ensures PostgreSQL remains fully synchronized with the external data source.
 ---
 ### Employee Management API
 Separate **Spring Boot** application responsible for:
